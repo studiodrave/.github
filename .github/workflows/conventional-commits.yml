@@ -1,0 +1,47 @@
+name: Conventional Commits Check
+
+on:
+  workflow_call:
+    # No inputs needed — works the same for every repo
+
+jobs:
+  check:
+    name: Validate commit messages
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install commitlint
+        run: |
+          npm install --save-dev \
+            @commitlint/cli \
+            @commitlint/config-conventional
+
+      - name: Write commitlint config
+        run: |
+          cat > commitlint.config.js << 'EOF'
+          module.exports = {
+            extends: ['@commitlint/config-conventional'],
+            rules: {
+              'type-enum': [2, 'always', [
+                'feat', 'fix', 'docs', 'chore', 'refactor',
+                'test', 'style', 'perf', 'ci', 'build', 'revert'
+              ]],
+              'subject-case': [0],
+              'body-max-line-length': [0],
+            }
+          };
+          EOF
+
+      - name: Validate PR commits
+        run: |
+          npx commitlint \
+            --from ${{ github.event.pull_request.base.sha }} \
+            --to ${{ github.event.pull_request.head.sha }} \
+            --verbose
