@@ -1,0 +1,35 @@
+name: Notify Docs Site
+
+on:
+  workflow_call:
+    inputs:
+      source:
+        description: 'Name of the source repo (e.g. drave-ui, planific)'
+        required: true
+        type: string
+      version:
+        description: 'Version that was released (optional)'
+        required: false
+        type: string
+        default: ''
+    secrets:
+      docs_push_token:
+        description: 'PAT with actions:write on StudioDrave/docs'
+        required: true
+
+jobs:
+  notify:
+    name: Trigger docs rebuild
+    runs-on: ubuntu-latest
+    steps:
+      - name: Dispatch to docs site
+        uses: peter-evans/repository-dispatch@v3
+        with:
+          token: ${{ secrets.docs_push_token }}
+          repository: StudioDrave/docs
+          event-type: docs-updated
+          client-payload: |
+            {
+              "source": "${{ inputs.source }}",
+              "version": "${{ inputs.version }}"
+            }
