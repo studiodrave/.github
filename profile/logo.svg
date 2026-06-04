@@ -1,0 +1,10 @@
+<svg width="120" height="120" viewBox="0 0 120 120"
+     xmlns="http://www.w3.org/2000/svg" fill="none">
+  <!-- Background circle -->
+  <circle cx="60" cy="60" r="56" fill="#1D6B50"/>
+  <!-- Stylized D mark — two rectangles forming a bold D shape -->
+  <rect x="36" y="30" width="12" height="60" rx="4" fill="white"/>
+  <path d="M48 30 L68 30 Q84 30 84 60 Q84 90 68 90 L48 90"
+        stroke="white" stroke-width="12" fill="none"
+        stroke-linejoin="round" stroke-linecap="round"/>
+</svg>
