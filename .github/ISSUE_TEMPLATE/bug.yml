@@ -1,0 +1,38 @@
+name: Bug
+description: Something isn't working
+type: Bug
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: What happened
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Steps to reproduce
+      value: |
+        1. 
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Version/commit, platform (Android/iOS/web/ESP32 board), OS.
+  - type: textarea
+    id: pointers
+    attributes:
+      label: Where to look
+      description: Suspected files, logs, stack traces.
+  - type: textarea
+    id: verify
+    attributes:
+      label: How to verify the fix
