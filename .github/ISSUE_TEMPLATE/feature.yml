@@ -1,0 +1,36 @@
+name: Feature
+description: New behavior or capability
+type: Feature
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What user or developer problem does this solve?
+    validations:
+      required: true
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed solution
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+      value: |
+        - [ ] 
+    validations:
+      required: true
+  - type: textarea
+    id: pointers
+    attributes:
+      label: Where to look
+      description: Files, modules, designs, related issues/PRs.
+  - type: textarea
+    id: verify
+    attributes:
+      label: How to verify
+  - type: textarea
+    id: out-of-scope
+    attributes:
+      label: Out of scope

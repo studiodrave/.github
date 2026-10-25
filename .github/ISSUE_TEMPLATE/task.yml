@@ -1,0 +1,34 @@
+name: Task
+description: A unit of work (refactor, chore, setup, follow-up)
+type: Task
+body:
+  - type: textarea
+    id: context
+    attributes:
+      label: Context
+      description: Why this matters and any background an outsider (or an agent) needs.
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+      description: Concrete, checkable outcomes. This is what "done" means.
+      value: |
+        - [ ] 
+    validations:
+      required: true
+  - type: textarea
+    id: pointers
+    attributes:
+      label: Where to look
+      description: Files, modules, docs, related issues/PRs.
+  - type: textarea
+    id: verify
+    attributes:
+      label: How to verify
+      description: Commands to run or steps to check (e.g. `./gradlew test`, `idf.py build`).
+  - type: textarea
+    id: out-of-scope
+    attributes:
+      label: Out of scope
