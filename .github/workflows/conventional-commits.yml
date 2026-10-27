@@ -1,12 +1,28 @@
 name: Conventional Commits Check
 
+# Reusable workflow. Call it from a pull_request workflow, pinned to a release
+# tag or commit SHA (not @main):
+#
+#   on: pull_request
+#   jobs:
+#     commits:
+#       uses: StudioDrave/.github/.github/workflows/conventional-commits.yml@v1  # or a full SHA
+#
+# Only meaningful on pull_request events; on any other caller event the job
+# is skipped.
+
 on:
   workflow_call:
     # No inputs needed — works the same for every repo
 
+permissions:
+  contents: read
+
 jobs:
   check:
     name: Validate commit messages
+    # base/head SHAs only exist on pull_request events
+    if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -15,19 +31,18 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
 
       - name: Install commitlint
-        run: |
-          npm install --save-dev \
-            @commitlint/cli \
-            @commitlint/config-conventional
+        # --no-save: don't create or modify package.json / lockfile in the caller's repo
+        run: npm install --no-save @commitlint/cli@21.2.4 @commitlint/config-conventional@21.2.4
 
       - name: Write commitlint config
+        # Written outside the workspace so a repo's own commitlint config is never overwritten
         run: |
-          cat > commitlint.config.js << 'EOF'
+          cat > "$RUNNER_TEMP/commitlint.config.cjs" << EOF
           module.exports = {
-            extends: ['@commitlint/config-conventional'],
+            extends: [require.resolve('$PWD/node_modules/@commitlint/config-conventional')],
             rules: {
               'type-enum': [2, 'always', [
                 'feat', 'fix', 'docs', 'chore', 'refactor',
@@ -40,8 +55,12 @@ jobs:
           EOF
 
       - name: Validate PR commits
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
         run: |
-          npx commitlint \
-            --from ${{ github.event.pull_request.base.sha }} \
-            --to ${{ github.event.pull_request.head.sha }} \
+          npx --no-install commitlint \
+            --config "$RUNNER_TEMP/commitlint.config.cjs" \
+            --from "$BASE_SHA" \
+            --to "$HEAD_SHA" \
             --verbose
